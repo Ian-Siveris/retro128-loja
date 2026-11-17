@@ -18,10 +18,11 @@ function formatarTempo(ms) {
   return `<b>${dias}</b>d <b>${dois(horas)}</b>h <b>${dois(minutos)}</b>m <b>${dois(segundos)}</b>s`;
 }
 
+const HISTORICO_CONTADOR_MAXIMO = 60;
+
 function iniciarContador(campanha) {
   const banner = document.getElementById('banner-bf');
   const alvo = banner.querySelector('.bf-tempo');
-  const vitrine = document.getElementById('vitrine');
   const fim = new Date(campanha.fim).getTime();
   banner.hidden = false;
 
@@ -32,9 +33,11 @@ function iniciarContador(campanha) {
     historicoContador.push({
       instante: Date.now(),
       restante: restante,
-      jogos: JOGOS.map((jogo) => ({ ...jogo })),
-      vitrine: vitrine.cloneNode(true)
+      jogos: JOGOS.map((jogo) => ({ ...jogo }))
     });
+    if (historicoContador.length > HISTORICO_CONTADOR_MAXIMO) {
+      historicoContador.shift();
+    }
     Observabilidade.contar('contador_ticks');
     alvo.innerHTML = formatarTempo(restante);
   }
