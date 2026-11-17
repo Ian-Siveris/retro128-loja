@@ -14,7 +14,7 @@ function formatarBRL(valor) {
 
 /* Preço efetivamente cobrado de um jogo */
 function precoDe(jogo) {
-  return jogo.preco;
+  return precoComDesconto(jogo, CONFIG);
 }
 
 /* ---------------- Carregamento ---------------- */
@@ -235,8 +235,7 @@ async function iniciar() {
   renderizarDestaque(JOGOS[0]);
   renderizarCarrinho();
 
-  // Campanha Black Friday (RET-203): remova as duas barras da linha abaixo para ligar o contador
-  // if (CONFIG.blackFriday.ativa) iniciarContador(CONFIG.blackFriday);
+  if (CONFIG.blackFriday.ativa) iniciarContador(CONFIG.blackFriday);
 
   renderizarFiltros();
   renderizarCatalogo();
