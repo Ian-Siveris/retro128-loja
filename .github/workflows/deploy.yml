@@ -51,6 +51,34 @@ jobs:
       - name: Configurar Pages
         uses: actions/configure-pages@v5
 
+      - name: Validar capas do catálogo
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+
+          with open('config/app-config.json', encoding='utf-8') as f:
+              config = json.load(f)
+          with open(config['catalogoUrl'], encoding='utf-8') as f:
+              catalogo = json.load(f)
+
+          pasta = config['pastaCapas']
+          faltando = []
+          for jogo in catalogo['jogos']:
+              caminho = os.path.join(pasta, jogo['capa'])
+              if not os.path.isfile(caminho):
+                  faltando.append(f"{jogo['id']}: {caminho}")
+
+          if faltando:
+              print("Capas referenciadas no catálogo mas ausentes em " + pasta + ":")
+              for linha in faltando:
+                  print(" - " + linha)
+              sys.exit(1)
+
+          print(f"OK: todas as {len(catalogo['jogos'])} capas existem em {pasta}")
+          PY
+
       - name: Empacotar o site
         uses: actions/upload-pages-artifact@v3
         with:
